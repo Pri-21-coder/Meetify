@@ -3,7 +3,14 @@ let connections = {}
 let messages = {}
 let timeOnline = {}
 export const connectToSocket =(server) => {
-    const io = new Server(server);
+    const io = new Server(server, {
+        cors: {
+            origin: "*",
+            methods: ["GET", "POST"],
+            allowedHeaders: ["*"],
+            credentials: true
+        }
+    });
     //connect with socket
     io.on("connection", (socket)=>{
         //on means something emit from client side, 
