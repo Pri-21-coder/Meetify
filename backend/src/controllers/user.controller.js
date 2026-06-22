@@ -14,11 +14,15 @@ const login = async (req, res)=>{
             return res.status(httpStatus.NOT_FOUND).json({message: "User Not Found"})
         }
         return res.json(user);
-        if(bcrypt.compare(password, user.password)){
+        let isPasswordCorrect = await bcrypt.compare(password, user.password)// return a promise
+        if(isPasswordCorrect){
             let token = crypto.randomBytes(20).toString("hex");
             User.token = token;
             await User.save();
             return res.status(httpStatus.OK).json({token: token})
+        } else{
+            // if password or username not matched
+            return res.status(httpStatus.UNAUTHORIZED).json({message: "Invalid Username or Password"})
         }
     } catch(e){
         res.json({message: `Something went wrong ${e}`})
