@@ -1,0 +1,56 @@
+.landingPageContainer {
+    width: 100vw;
+    height: 100vh;
+    background: url("/public/background.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: white
+}
+.landingPageContainer nav {
+    padding-inline: 1.2rem;
+    padding-block: 1.6rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.019); /* Semi-transparent white */
+    backdrop-filter: blur(10px);          /* Blurs the background behind it */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Subtle bottom border */
+}
+.landingPageContainer nav h2 {
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: #f2d33a;
+}
+
+.landingPageContainer nav .navlist {
+    display: flex;
+    gap: 1.6rem;
+    cursor: pointer;
+}
+.landingMainContainer {
+    display: flex;
+    justify-content: space-between;
+    padding-inline: 3rem;
+    height: 80vh;
+    align-items: center;
+}
+.landingMainContainer > div:nth-child(1){
+    font-size: 1.5rem;
+}
+.landingMainContainer > div:nth-child(1) div[role='button'] {
+    background-color: #b2d71b;
+    width: fit-content;
+    padding: 1rem;
+    border-radius:20px;
+    margin-top: 1.4rem;
+}
+
+.landingMainContainer > div:nth-child(1) div[role='button'] a {
+    text-decoration: none;
+    color: white;
+    font-size:1.2rem;
+}
+.landingMainContainer > div:nth-child(2) img {
+    height: 70vh;
+    width: auto;
+}
