@@ -2,7 +2,15 @@ import React, { useEffect,useRef,useState } from 'react';
 import io from "socket.io-client";
 import { Badge, IconButton, TextField } from '@mui/material';
 import { Button } from '@mui/material';
-import styles from "../styles/videoComponent.module.css"
+import VideocamIcon from '@mui/icons-material/Videocam';
+import VideocamOffIcon from '@mui/icons-material/VideocamOff';
+import styles from "../styles/videoComponent.module.css";
+import CallEndIcon from '@mui/icons-material/CallEnd';
+import MicIcon from '@mui/icons-material/Mic';
+import MicOffIcon from '@mui/icons-material/MicOff';
+import ScreenShareIcon from '@mui/icons-material/ScreenShare';
+import StopScreenShareIcon from '@mui/icons-material/StopScreenShare';
+import ChatIcon from '@mui/icons-material/Chat';
 const server_url = "http://localhost:8000";
 var connections = {};
 const peerConfigConnections = {
@@ -18,7 +26,7 @@ export default function VideoMeetComponent(){
     let localVideoRef = useRef();
     let [videoAvailable, setVideoAvailable] = useState(true);
     let [audioAvailable, setAudioAvailable] = useState(true);
-    let [video, setVideo] = useState([]);
+    let [video, setVideo] = useState();
     let [audio, setAudio] = useState();
     let [screen, setScreen] = useState();
     let [showModal, setModal] = useState();
@@ -88,7 +96,7 @@ export default function VideoMeetComponent(){
             getUserMedia();
 
         }
-    }, [audio, video])
+    }, [video, audio])
     let getMedia = ()=>{
         setVideo(videoAvailable);
         setAudio(audioAvailable);
@@ -142,7 +150,7 @@ export default function VideoMeetComponent(){
                     }).catch(e => console.log(e));
                 })
             }
-    })
+        })
     
     }
     
@@ -224,7 +232,7 @@ export default function VideoMeetComponent(){
                         // diff diff stream
                         let videoExists = videoRef.current.find(video => video.socketId === socketListId);
                         if(videoExists){
-                            setVideos(Videos =>{
+                            setVideos(videos =>{
                                 const updatedVideos = videos.map(video =>
                                     // socketId not match means stream comes from diff people we don't need that in this else condition comes
                                     video.socketId === socketListId ? { ...video, stream: event.stream}: video
@@ -298,10 +306,17 @@ export default function VideoMeetComponent(){
         let stream = canvas.captureStream();
         return Object.assign(stream.getVideoTracks()[0], {enabled: false});
     }
+    let handleVideo =()=>{
+        setVideo(!video);
+    }
+    let handleAudio =()=>{
+        setAudio(!audio);
+    }
     let connect = () => {
         setAskForUsername(false);
         getMedia();
     }
+    
     return(
         <div>
             {askForUsername === true ?
@@ -314,12 +329,34 @@ export default function VideoMeetComponent(){
                         </div>
                 </div> : 
                 <div className={styles.meetVideoContainer}>
+                    <div className={styles.buttonContainers}>
+                        <IconButton onClick={handleVideo} style={{color: "white"}}>
+                            {(video===true)? <VideocamIcon/>: <VideocamOffIcon/>}
+                        </IconButton>
+                        <IconButton style={{color: "red"}}>
+                            <CallEndIcon/>
+                        </IconButton>
+                        <IconButton onClick= {handleAudio} style={{color: "white"}}>
+                            {(audio===true)? <MicIcon/>: <MicOffIcon/>}
+                        </IconButton>
+                        {screenAvailable === true ?
+                        <IconButton style={{color: "white"}}>
+                            {(screen===true)? <ScreenShareIcon/>: <StopScreenShareIcon/>}
+                        </IconButton> : <></>
+                        }
+                        <Badge badgeContent={newMessages} max={999} color='secondary'>
+                            <IconButton style={{color: "white"}}>
+                                <ChatIcon/>
+                            </IconButton>
+                        </Badge>
+                    </div>
                 {/* autoPlay use for show the video */}
-                    <video className= 'meetUserVideo' ref={localVideoRef} autoPlay muted></video>
+                    <video className= {styles.meetUserVideo} ref={localVideoRef} autoPlay muted></video>
                     {/* for connecting people */}
+                    <div className={styles.conferenceView} >
                     {videos.map((video)=>(
                         <div key={video.socketId}>
-                            <h2>{video.socketId}</h2>
+                            {/*<h2>{video.socketId}</h2>*/}
                             <video
                                 data-socket={video.socketId}
                                 ref={ref => {
@@ -333,6 +370,7 @@ export default function VideoMeetComponent(){
                             
                         </div>
                     ))}
+                    </div>
                 </div>
             }
         </div>
