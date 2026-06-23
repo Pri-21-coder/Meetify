@@ -1,4 +1,5 @@
 import React, { useEffect,useRef,useState } from 'react';
+import io from "socket.io-client";
 import { Badge, IconButton, TextField } from '@mui/material';
 import { Button } from '@mui/material';
 import { use } from 'react';
@@ -6,7 +7,7 @@ const server_url = "http://localhost:8000";
 var connections = {};
 const peerConfigConnections = {
     "iceServers": [
-        {"urls": "stun.stun.l.google.com:19302"}
+        {"urls": "stun:stun.l.google.com:19302"}
     ]
 }
 export default function VideoMeetComponent(){
@@ -17,7 +18,7 @@ export default function VideoMeetComponent(){
     let localVideoRef = useRef();
     let [videoAvailable, setVideoAvailable] = useState(true);
     let [audioAvailable, setAudioAvailable] = useState(true);
-    let [video, setVideo] = useState();
+    let [video, setVideo] = useState([]);
     let [audio, setAudio] = useState();
     let [screen, setScreen] = useState();
     let [showModal, setModal] = useState();
@@ -103,17 +104,107 @@ export default function VideoMeetComponent(){
     }
     // this is the dependency useEffect
     useEffect(()=>{
-        if(video != undefined && audio != undefined){
+        if(video !== undefined && audio !== undefined){
             getUserMedia();
 
         }
     }, [audio, video])
+
+    // difficult part
+    let gotMessageFromServer =(fromId, message)=>{
+
+    }
+    let addMessage = ()=>{
+
+    }
+    let connectToSocketServer = ()=>{
+        socketRef.current = io.connect(server_url, {secure: false})
+        //catch server emit message
+        socketRef.current.on('signal', gotMessageFromServer);
+        socketRef.current.on("connect", ()=>{
+            // send the emit message to server
+            socketRef.current.emit("join-call", window.location.href)
+            socketIdRef.current = socketRef.current.id
+            socketRef.current.on("chat-message", addMessage)
+            socketRef.current.on("user-left", (id)=>{
+                setVideo((video)=> video.filter((video)=>video.socketId !== id))
+            })
+            socketRef.current.on("user-joined",(id,clients)=>{
+                clients.forEach((socketListId)=>{
+                    // use webRTC
+                    connections[socketListId]= new RTCPeerConnection(peerConfigConnections)
+                    // ice is actually a protocol interactive connectivity establishment
+                    // use to connect directly one client to another
+                    connections[socketListId].onicecandidate = (event) => {
+                        if(event.candidate !== null){
+                            socketRef.current.emit("signal", socketListId, JSON.stringify({'ice': event.candidate}))
+                        }
+                    }
+                    connections[socketListId].onaddstream = (event)=>{
+                        // video stream only, audio stream only, audio video both stream, screen share stream all can comes
+                        // diff diff stream
+                        let videoExists = videoRef.current.find(video => video.socketId === socketListId);
+                        if(videoExists){
+                            setVideo(Videos =>{
+                                const updatedVideos = video.map(video =>
+                                    // socketId not match means stream comes from diff people we don't need that in this else condition comes
+                                    video.socketId === socketListId ? { ...video, stream: event.stream}: video
+                                );
+                                videoRef.current = updatedVideos;
+                                return updatedVideos;
+                            })
+                        }else{
+                            let newVideo = {
+                                socketId: socketListId,
+                                stream: event.stream,
+                                autoPlay: true,
+                                playsinline: true
+                            }
+                            setVideos(video =>{
+                                const updatedVideos = [...videos, newVideo];
+                                videoRef.current= updatedVideos;
+                                return updatedVideos;
+                            });
+                        }
+                    };
+                    // because of window extension accesible everywhere
+                    if(window.localStream !== undefined && window.localStream !== null){
+                        connections[socketListId].addStream(window.localStream);
+                    } else{
+                        // if we stop video then blackSlience comes. blackScreen comes through media context
+
+                    }
+                })
+                //my connection
+                if(id===socketIdRef.current){
+                    for(let id2 in connections){
+                        //we don't need to establish connection with own
+                        if(id2 === socketIdRef.current) continue
+                        // other wise try to add my local stream in connection id2
+                        try{
+                            connections[id2].addStream(window.localStream)
+                        }catch(e){
+
+                        }
+                        connections[id2].createOffer().then((description)=>{
+                            connections[id2].setLocalDescription(description)
+                            .then(()=>{
+                                // sdp means session description protocol (need for connection establish)
+                                socketRef.current.emit("signal", id2, JSON.stringify({"sdp": connections[id2].localDescription}))
+                            })
+                            .catch(e => console.log(e))
+                        })
+                    }
+                }
+            })
+        })
+    };
     let getMedia = ()=>{
         setVideo(videoAvailable);
         setAudio(audioAvailable);
         // after run previous two line do getAudio function should be run
         // setVideo, setAudio asynchronous function thats why need dependency use-effect
-        //connectToSocketServer();
+        connectToSocketServer();
     }
     let connect = () => {
         setAskForUsername(false);
