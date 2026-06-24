@@ -380,6 +380,16 @@ export default function VideoMeetComponent(){
                         </div>
                 </div> : 
                 <div className={styles.meetVideoContainer}>
+                    {showModal ? <div className={styles.chatRoom}>
+                        <div className={styles.chatContainer}>
+                            <h1>Chat</h1> 
+                            <div className={styles.chattingArea}>
+                                <TextField id="outlined-basic" label="Enter Your chat" variant="outlined" />
+                                <Button variant='contained' >Send</Button>
+                            </div>
+                            
+                        </div>
+                    </div> : <></>}
                     <div className={styles.buttonContainers}>
                         <IconButton onClick={handleVideo} style={{color: "white"}}>
                             {(video===true)? <VideocamIcon/>: <VideocamOffIcon/>}
@@ -396,7 +406,7 @@ export default function VideoMeetComponent(){
                         </IconButton> : <></>
                         }
                         <Badge badgeContent={newMessages} max={999} color='secondary'>
-                            <IconButton style={{color: "white"}}>
+                            <IconButton onClick={()=> setModal(!showModal)} style={{color: "white"}}>
                                 <ChatIcon/>
                             </IconButton>
                         </Badge>

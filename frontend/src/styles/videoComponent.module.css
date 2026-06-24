@@ -1,7 +1,7 @@
 .meetUserVideo {
     position: absolute;
     bottom: 90px; 
-    right: 20px;
+    left: 20px;
     height: 20vh;
     min-height: 120px;
     width: auto;
@@ -66,4 +66,23 @@
     background: #000;
     object-fit: cover;
     transform: scaleX(-1);
+}
+.chatRoom {
+    position: absolute;
+    height: 90vh;
+    right: 0;
+    background: white;
+    border-radius: 10px;
+    width: 30vw;
+    padding-inline: 20px;
+    margin-top: 5px;
+    margin-right: 5px;
+}
+.chatContainer {
+    position: relative;
+    height: 100%;
+}
+.chattingArea{
+    position: absolute;
+    bottom: 0;
 }
