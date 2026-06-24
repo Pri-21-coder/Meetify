@@ -44,7 +44,16 @@ export default function VideoMeetComponent(){
         getPermissions();
     }, [])
 
-   
+      let getDisplayMedia = ()=>{
+        if(screen){
+            if(navigator.mediaDevices.getDisplayMedia){
+                navigator.mediaDevices.getDisplayMedia({video: true, audio: true})
+                .then(getDisplayMediaSuccess)
+                .then((stream)=>{})
+                .catch((e)=> console.log(e))
+            }
+        }
+    }
     const getPermissions = async() => {
         try {
             //take permission if we can use your camera or not (navigator is important)
@@ -173,7 +182,39 @@ export default function VideoMeetComponent(){
         }
     }
     
-
+    let getDisplayMediaSuccess = (stream) =>{
+        try {
+            window.localStream.getTracks().forEach(track => track.stop())
+        } catch(e){
+            console.log(e);
+        }
+        window.localStream = stream;
+        localVideoRef.current.srcObject = stream;
+        for(let id in connections){
+            if(id === socketIdRef.current) continue;
+            connections[id].addStream(window.localStream)
+            connections[id].createOffer().then((description)=>{
+                connections[id].setLocalDescription(description)
+                .then(()=>{
+                    socketRef.current.emit("signal", id, JSON.stringify({"sdp": connections[id].localDescription}))
+                }) .catch(e => console.log(e))
+            })
+        }
+        stream.getTracks().forEach(track => track.onended =()=>{
+            setScreen(false);
+            try{
+                let tracks = localVideoRef.current.srcObject.getTracks()
+                tracks.forEach(track => track.stop())
+            } catch(e){
+                console.log(e)
+            }
+            //need to create blacksilence
+            let blackSilence = (...args) => new MediaStream([black(...args), silence()]);
+            window.localStream = blackSilence();
+            localVideoRef.current.srcObject = window.localStream; 
+            getUserMedia();
+        })
+    }
     // difficult part
     let gotMessageFromServer =(fromId, message)=>{
         //if signal comes transfer to this
@@ -312,6 +353,16 @@ export default function VideoMeetComponent(){
     let handleAudio =()=>{
         setAudio(!audio);
     }
+    
+ 
+    useEffect(()=>{
+        if(screen !== undefined){
+            getDisplayMedia();
+        }
+    }, [screen])
+    let handleScreen =()=>{
+        setScreen(!screen);
+    }
     let connect = () => {
         setAskForUsername(false);
         getMedia();
@@ -340,7 +391,7 @@ export default function VideoMeetComponent(){
                             {(audio===true)? <MicIcon/>: <MicOffIcon/>}
                         </IconButton>
                         {screenAvailable === true ?
-                        <IconButton style={{color: "white"}}>
+                        <IconButton onClick={handleScreen} style={{color: "white"}}>
                             {(screen===true)? <ScreenShareIcon/>: <StopScreenShareIcon/>}
                         </IconButton> : <></>
                         }
