@@ -5,6 +5,7 @@ import "../App.css";
 import { Button, IconButton, TextField } from '@mui/material';
 import RestoreIcon from '@mui/icons-material/Restore';
 import { AuthContext } from "../contexts/AuthContext";
+
 //this component not accesible by everyone Authenticate user can access this
 function HomeComponent(){
     let navigate = useNavigate();
@@ -21,7 +22,11 @@ function HomeComponent(){
                 <h2>Meetify</h2>
             </div>
             <div style={{display: "flex", alignItem: "center"}}>
-                <IconButton>
+                <IconButton onClick={
+                    ()=>{
+                        navigate("/history")
+                    }
+                }>
                     <RestoreIcon/>
                 </IconButton>
                 <p>History</p>
