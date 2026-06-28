@@ -1,88 +1,491 @@
+/* Full-screen dark container */
+.meetVideoContainer {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background: #202124;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Google Sans', Roboto, Arial, sans-serif;
+  overflow: hidden;
+}
+
+/* LOBBY VIEW  */
+.lobbyContainerLight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: #ffffff; 
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  color: #3c4043;
+}
+
+/* Navbar Layout */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  width: 100%;
+  box-sizing: border-box;
+  height: 64px;
+}
+
+.navBrand {
+  display: flex;
+  align-items: center;
+  user-select: none;
+}
+
+.meetLogoText {
+  font-size: 22px;
+  color: #5f6368;
+  font-weight: 400;
+  font-family: 'Product Sans', 'Google Sans', Arial, sans-serif;
+  letter-spacing: -0.5px;
+}
+
+.navProfile {
+  display: flex;
+  align-items: center;
+  gap: 16px; 
+}
+
+.navLink {
+  font-size: 16px;     
+  font-weight: 500;
+  color: #1a73e8; 
+  cursor: pointer;
+  margin: 0;
+  padding: 8px 16px;  
+  border-radius: 20px;  
+  transition: all 0.2s ease;
+}
+
+.navLink:hover {
+  background-color: #e8f0fe;
+}
+
+
+.navButton {
+  background-color: #1a73e8;
+  color: #ffffff;
+  padding: 8px 24px;    
+  border-radius: 20px;  
+  font-weight: 500;
+  font-size: 16px;      
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(60,64,67,0.3);
+  transition: all 0.2s ease;
+}
+
+.navButton:hover {
+  background-color: #1557b0;
+  box-shadow: 0 2px 4px rgba(60,64,67,0.4);
+}
+
+.navButton p {
+  margin: 0;
+  color: white;
+}
+
+
+.lobbyContent {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 80px;
+  flex: 1;
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 40px;
+  box-sizing: border-box;
+}
+
+/* Left Panel Base */
+.videoSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  max-width: 600px;
+}
+
+/* Video Stage Window */
+.videoPreviewBox {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #202124; 
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 2px 6px 2px rgba(60,64,67,0.15);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.lobbyVideoPreview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+}
+
+.cameraOffText {
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0.2px;
+}
+
+.videoOverlayControls {
+  position: absolute;
+  bottom: 16px;
+  display: flex;
+  gap: 12px;
+  z-index: 10;
+}
+
+.controlBtnActive {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  color: #ffffff !important;
+  width: 44px;
+  height: 44px;
+}
+
+.controlBtnActive:hover {
+  background-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.controlBtnInactive {
+  background-color: #ea4335 !important; 
+  color: #ffffff !important;
+  width: 44px;
+  height: 44px;
+  box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3);
+}
+
+.controlBtnInactive:hover {
+  background-color: #d93025 !important;
+}
+
+/* Right Panel Action Base */
+.joinPanel {
+  flex: 0 0 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.readyTitle {
+  font-size: 28px;
+  font-weight: 400;
+  color: #202124;
+  margin: 0 0 24px 0;
+  font-family: 'Google Sans', Roboto, Arial, sans-serif;
+}
+
+.joinActions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 16px;
+}
+
+.joinActions :global(.MuiTextField-root) {
+  width: 80%;
+}
+
+.joinActions :global(.MuiInput-input) {
+  color: #3c4043 !important;
+  font-size: 15px !important;
+  font-weight: 400 !important;
+  padding-bottom: 6px !important;
+}
+
+/* MAIN MEETING AREA */
+.mainMeetingArea {
+  display: flex;
+  flex-direction: row;
+ width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.videoGridWrapper {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  padding-bottom: 90px; 
+  min-height: 0;
+}
+
+/* CONFERENCE VIEW */
+.conferenceView {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 450px));
+  gap: 16px;
+  align-content: center;
+  justify-content: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Video Card Structure */
+.videoCard {
+  position: relative;
+  flex: 0 0 400px;
+  width: 100%;
+  aspect-ratio: 16 / 9; 
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #3c4043;
+  
+}
+.mirror{
+  transform: scaleX(-1);
+}
+.videoStream {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 2; 
+  pointer-events: none;
+  background: transparent !important;
+  
+}
+
+
+.avatarContainer {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.avatarCircle {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 40px;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.nameLabel {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 10;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+}
+
+#meeting-wrapper:fullscreen {
+  display: flex;
+  flex-direction: column;
+  background-color: #202124;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+
+#meeting-wrapper:fullscreen .videoGridWrapper {
+  flex: 1;
+  overflow-y: auto;
+}
+
+#meeting-wrapper:fullscreen .buttonContainers {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+}
+.fullScreenBtn {
+    position: absolute !important; 
+    bottom: 12px !important;
+    right: 10px !important; 
+    z-index: 20; 
+    color: white !important;
+    background: rgba(0, 0, 0, 0.4) !important;
+    padding: 6px !important;
+}
+.muteIconOverlay {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background-color: rgba(32, 33, 36, 0.6);
+  border-radius: 50%;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+/* LOCAL PIP (Picture-in-Picture) CONTAINER */
+.meetUserVideoContainer {
+  position: absolute;
+  width: 250px;
+  aspect-ratio: 16/9;
+  bottom: 90px; 
+  right: 20px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mirror{
+   transform: scaleX(-1); 
+}
 .meetUserVideo {
-    position: absolute;
-    bottom: 90px; 
-    left: 20px;
-    height: 20vh;
-    min-height: 120px;
-    width: auto;
-    aspect-ratio: 16/9;
-    object-fit: cover;
-    transform: scaleX(-1);
-    border-radius: 12px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 12px 36px rgba(0,0,0,0.5);
-    z-index: 10; 
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 2;
 }
 
-.meetVideoContainer{
-    position: relative;
-    height: 100vh;
-    background: rgb(36, 6, 6);
-}
-.meetUserVideo {
-    position: absolute;
-    bottom: 10vh;
-    height: 25vh;
-    width: auto;
-    right: 0.5vw;
-    border-radius: 20px;
-}
-.buttonContainers{
-    position: absolute;
-    width: 100vw;
-    bottom:0;
-    text-align: center;
-}
-.buttonContainers svg {
-    font-size: 2rem;
-}
-.conferenceView{
-    display: flex;
-    border-radius: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    padding: 20px;
-    height: calc(100vh - 80px); 
-    width: 100%;
-    
+/* BOTTOM CONTROLS */
+.buttonContainers {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  z-index: 30;
+  background-color: #202124;
+  border: 1px solid #5f6368;
+  border-radius: 40px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
 }
 
-.conferenceView > div {
-    flex: 1 1 40%;
-    max-width: 640px;
-    position: relative;
-    aspect-ratio: 16/9 !important;
-}
-
-
-.conferenceView > div > video {
-    width: 100%;
-    height: auto;
-    max-height: 70vh;
-    border-radius: 12px; 
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-    background: #000;
-    object-fit: cover;
-    transform: scaleX(-1);
-}
+/* CHAT PANEL */
 .chatRoom {
-    position: absolute;
-    height: 90vh;
-    right: 0;
-    background: white;
-    border-radius: 10px;
-    width: 30vw;
-    padding-inline: 20px;
-    margin-top: 5px;
-    margin-right: 5px;
+  width: 360px;
+  border-radius: 8px;
+  margin: 16px 16px 90px 0; 
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: 360px;
+  background: #202124;
+  border-left: 1px solid #3c4043; /* Adds clear separation */
+  box-shadow: -2px 0 5px rgba(0,0,0,0.2); /* Adds depth */
 }
-.chatContainer {
-    position: relative;
-    height: 100%;
+
+.chatHeader {
+  padding: 20px;
+  background: #202124;
 }
-.chattingArea{
-    position: absolute;
-    bottom: 0;
+
+.chattingDisplay {
+  flex: 1;
+  padding: 0 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.messageBubble {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.chatAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.messageContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.messageHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.messageSender {
+  font-size: 13px;
+  font-weight: 600;
+  color: #e8eaed;
+}
+
+.messageTime {
+  font-size: 11px;
+  color: #9aa0a6;
+}
+
+.messageData {
+  margin: 0;
+  font-size: 14px;
+  color: #e8eaed;
+  line-height: 1.4;
+}
+
+.chattingArea {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 20px;
+  background: #202124;
 }
