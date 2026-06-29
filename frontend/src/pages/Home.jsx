@@ -3,6 +3,7 @@ import withAuth from "../utlis/withAuth";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
 import { Button, IconButton, TextField } from '@mui/material';
+import VideocamIcon from '@mui/icons-material/Videocam';
 import RestoreIcon from '@mui/icons-material/Restore';
 import { AuthContext } from "../contexts/AuthContext";
 
@@ -19,6 +20,7 @@ function HomeComponent(){
         <>
         <div className="navBar">
             <div style={{display: "flex",alignItems: "center"}}>
+                <VideocamIcon style={{ color: '#1a73e8', fontSize: '28px', marginRight: '8px' }} />
                 <h2>Meetify</h2>
             </div>
             <div style={{display: "flex", alignItem: "center"}}>

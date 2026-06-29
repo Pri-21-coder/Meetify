@@ -660,7 +660,7 @@ export default function VideoMeetComponent(){
                     {/* Navbar */}
                     <div className={styles.navbar}>
                         <div className={styles.navBrand}>
-                            <VideocamIcon style={{ color: '#5f6368', fontSize: '28px', marginRight: '8px' }} />
+                            <VideocamIcon style={{ fontSize: '28px', marginRight: '8px', color: '#1a73e8' }} />
                             <span className={styles.meetLogoText}>Meetify</span>
                         </div>
                         <div className={styles.navProfile}>
@@ -886,7 +886,7 @@ export default function VideoMeetComponent(){
                                     </div>
                                 )) : (
                                     <p style={{ textAlign: 'center', color: '#9aa0a6', marginTop: '20px', fontSize: '14px', lineHeight: '1.5' }}>
-                                        Messages will not be saved for meeting participants when the call ends. You can pin a message to make it visible for people who join later.
+                                        Messages will not be saved for meeting participants when the call ends.
                                     </p>
                                 )}
                             </div>

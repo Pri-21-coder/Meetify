@@ -1,12 +1,14 @@
 import React from 'react'
 import "../App.css"
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom';
+import VideocamIcon from '@mui/icons-material/Videocam';
 export default function LandingPage(){
     const router = useNavigate();
     return (
         <div className='landingPageContainer'>
             <nav>
                 <div className='navHeader'>
+                    <VideocamIcon style={{ fontSize: '28px', marginRight: '8px', color: ' #b2d71b' }} />
                     <h2> Meetify</h2>
                 </div>
                 <div className='navlist'>

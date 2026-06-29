@@ -33,6 +33,13 @@
   width: 100%;
   box-sizing: border-box;
   height: 64px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(200, 200, 200, 0.5);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  z-index: 1000;
 }
 
 .navBrand {
@@ -43,8 +50,8 @@
 
 .meetLogoText {
   font-size: 22px;
-  color: #5f6368;
-  font-weight: 400;
+  color: #1a73e8;
+  font-weight: 700;
   font-family: 'Product Sans', 'Google Sans', Arial, sans-serif;
   letter-spacing: -0.5px;
 }
@@ -275,7 +282,6 @@
   background: transparent !important;
   
 }
-
 
 .avatarContainer {
   position: absolute;

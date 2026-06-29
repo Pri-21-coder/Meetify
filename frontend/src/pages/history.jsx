@@ -30,29 +30,33 @@ export default function History() {
         return `${day}/${month}/${year}`
     }
     return(
-        <div>
-            <IconButton onClick={() => {
-                routeTo("/home")
-            }}>
-                <HomeIcon />
-            </IconButton >
+        <div className="page-wrapper">
+            <div className="top-navbar">
+                <IconButton onClick={() => {
+                    routeTo("/home")
+                }}>
+                    <HomeIcon />
+                </IconButton >
+            </div>
+           <div className="history-container">
            {
                 (meetings.length !== 0) ? meetings.map((e, i) => {
                     return (
-                        <Card key={i} variant="outlined">
+                        <Card key={i} variant="outlined" className="history-card">
                             <CardContent>
-                                <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                <Typography className="card-code" sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                                     Code: {e.meetingCode} 
                                  </Typography>
 
-                                <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                                <Typography className="card-date" sx={{ mb: 1.5 }} color="text.secondary">
                                     Date: {formatDate(e.date)}
                                 </Typography>
                             </CardContent>
                         </Card>
                     )
-                }) : <></>
+                }) :<div className="no-history">No meeting history found.</div>
             }
+            </div> 
         </div>
     )
 }
