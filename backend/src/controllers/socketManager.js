@@ -31,7 +31,7 @@ export const connectToSocket =(server) => {
                 username: userNames[id] || "Guest"
             }));
     
-            socket.emit("get-existing-users", currentRoomUsers.filter(u => u.socketId !== socket.id));
+            socket.emit("get-existing-users", currentRoomUsers);
             //number of server/path
             connections[path].forEach((peerId) => {
                 if (peerId !== socket.id) {

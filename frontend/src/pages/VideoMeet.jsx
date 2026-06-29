@@ -189,9 +189,7 @@ export default function VideoMeetComponent(){
         }
         for(let id in connections){
             if(id === socketIdRef.current) continue;
-            window.localStream.getTracks().forEach((track) => {
-                connections[id].addTrack(track, window.localStream);
-            });
+            connections[id].addStream(window.localStream)
             connections[id].createOffer().then((description)=>{
                 connections[id].setLocalDescription(description)
                 .then(()=>{
@@ -314,10 +312,6 @@ export default function VideoMeetComponent(){
     }
     // difficult part
     let gotMessageFromServer =(fromId, message)=>{
-        if (!connections[fromId]) {
-            console.warn(`Connection for ${fromId} not yet initialized.`);
-            return; 
-        }
         //if signal comes transfer to this
         var signal = JSON.parse(message)
         // I don't send message to me
@@ -372,7 +366,6 @@ export default function VideoMeetComponent(){
             // Existing user detects a newcomer
             socketRef.current.on("user-joined", (incomingSocketId, incomingUsername) => {
                 // Pre-create the video card
-                if (incomingSocketId === socketIdRef.current) return;
                 setVideos((prevVideos) => {
                     if (!prevVideos.find(v => v.socketId === incomingSocketId)) {
                         return [...prevVideos, {
