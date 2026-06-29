@@ -151,11 +151,11 @@ export default function VideoMeetComponent(){
     }
 }, [askForUsername]); // Triggers when i switch from lobby to meeting
 
-    useEffect(()=>{
+    /*useEffect(()=>{
         if(video !== undefined && audio !== undefined){
             getUserMedia();
         }
-    }, [video, audio])
+    }, [video, audio]) */
 
     let getMedia = async()=>{
         setVideo(videoAvailable);
@@ -245,8 +245,8 @@ export default function VideoMeetComponent(){
         }    
         else {
             // Just toggle tracks if stream exists
-            window.localStream.getVideoTracks().forEach(t => t.enabled = !!video);
-            window.localStream.getAudioTracks().forEach(t => t.enabled = !!audio);
+            window.localStream.getVideoTracks().forEach(handleToggle('video', video));
+            window.localStream.getAudioTracks().forEach(handleToggle('audio', audio));
             if (localVideoRef.current){
                 localVideoRef.current.srcObject = window.localStream;
             }
@@ -291,6 +291,7 @@ export default function VideoMeetComponent(){
             navigator.mediaDevices.getUserMedia({ video: true, audio: true})
             .then((camStream) => {
                 let newCamTrack = camStream.getVideoTracks()[0];
+                newCamTrack.enabled = currentVideoState.current;
                 if (window.localStream) {
                     let oldScreenTrack = window.localStream.getVideoTracks()[0];
                     if (oldScreenTrack) window.localStream.removeTrack(oldScreenTrack);
@@ -299,6 +300,7 @@ export default function VideoMeetComponent(){
                     window.localStream = camStream;
                 }
                 if (localVideoRef.current) {
+                    localVideoRef.current.srcObject = null; // Clear it first
                     localVideoRef.current.srcObject = window.localStream;
                 }
                 // Send restored camera back to peers
@@ -508,28 +510,36 @@ export default function VideoMeetComponent(){
             return null;
         }
     };
-    const handleToggle = (trackType, newState) => {
-        if (window.localStream) {
-            const track = trackType === 'video'
-                ? window.localStream.getVideoTracks()[0]
-                : window.localStream.getAudioTracks()[0];
-            if (track) {
+   const handleToggle = (trackType, newState) => {
+    if (!window.localStream) return;
+
+    // Separate logic: Video toggle should NEVER touch screen tracks
+    window.localStream.getVideoTracks().forEach(track => {
+        // A robust way to identify the camera track vs screen track
+        const isScreen = track.label.toLowerCase().includes('screen') || 
+                         track.label.toLowerCase().includes('display');
+        
+        if (trackType === 'video') {
+            if (!isScreen) {
                 track.enabled = newState;
             }
         }
-        // Notify peers of state change if already connected
-        Object.keys(connections).forEach(id => {
-            // Logic to trigger renegotiation goes here
-            console.log(`Renegotiating ${trackType} state to ${newState}`);
+    });
+
+    // Audio is straightforward
+    if (trackType === 'audio') {
+        window.localStream.getAudioTracks().forEach(track => track.enabled = newState);
+    }
+
+    // Notify peers of the status
+    if (socketRef.current) {
+        socketRef.current.emit("media-status-change", {
+            socketId: socketIdRef.current,
+            trackType: trackType,
+            enabled: newState
         });
-        if (socketRef.current) {
-            socketRef.current.emit("media-status-change", {
-                socketId: socketIdRef.current,
-                trackType: trackType,
-                enabled: newState
-            });
-        }
-    };
+    }
+};
     const handleVideo = () => {
         const newState = !video;
         setVideo(newState);
@@ -814,6 +824,7 @@ export default function VideoMeetComponent(){
                             ref={localVideoRef}
                             autoPlay
                             playsInline
+                            muted
                             style={{ visibility: (video || screen) ? 'visible' : 'hidden' }}
                             onLoadedMetadata={(e) => e.target.play()}
                             />
@@ -842,11 +853,11 @@ export default function VideoMeetComponent(){
                             <IconButton onClick={handleVideo} sx={{ backgroundColor: '#3c4043', color: 'white', padding: '12px', '&:hover': { backgroundColor: '#5f6368' } }}>
                                 {video ? <VideocamIcon /> : <VideocamOffIcon />}
                             </IconButton>
-                            {screenAvailable && (
-                                <IconButton onClick={handleScreen} sx={{ backgroundColor: '#3c4043', color: 'white', padding: '12px', '&:hover': { backgroundColor: '#5f6368' } }}>
-                                    {screen ? <ScreenShareIcon /> : <StopScreenShareIcon />}
-                                </IconButton>
-                            )}
+                
+                            <IconButton onClick={handleScreen} sx={{ backgroundColor: '#3c4043', color: 'white', padding: '12px', '&:hover': { backgroundColor: '#5f6368' } }}>
+                                {screen ? <ScreenShareIcon /> : <StopScreenShareIcon />}
+                            </IconButton>
+                           
                             <IconButton onClick={handleEndCall} sx={{ backgroundColor: '#ea4335', color: 'white', padding: '12px', margin: '0 10px', '&:hover': { backgroundColor: '#d93025' } }}>
                                 <CallEndIcon />
                             </IconButton>
