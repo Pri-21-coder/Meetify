@@ -2,7 +2,7 @@ import axios from "axios";
 import httpStatus from "http-status";
 import { createContext, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import server from '../environment';
 //login logout function write here
 export const AuthContext = createContext({});
 const client = axios.create({
