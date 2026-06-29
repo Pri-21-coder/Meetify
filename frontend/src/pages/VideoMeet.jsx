@@ -16,7 +16,6 @@ import ChatIcon from '@mui/icons-material/Chat';
 import { useNavigate } from 'react-router-dom';
 import server from '../environment';
 const server_url = server;
-var connections = {};
 const peerConfigConnections = {
     "iceServers": [
         {"urls": "stun:stun.l.google.com:19302"}
@@ -30,7 +29,9 @@ const getAvatarColor = (name) => {
     }
     return darkColors[Math.abs(hash) % darkColors.length];
 };
-const getInitial = (name) => (name ? name.charAt(0).toUpperCase() : '?');
+const getInitial = (name) => {
+    return (name && typeof name === 'string') ? name.charAt(0).toUpperCase() : '?';
+};
 export default function VideoMeetComponent(){
     // We will handle WebRTC connections state
     var socketRef = useRef();
@@ -58,7 +59,7 @@ export default function VideoMeetComponent(){
     useEffect(() => { currentVideoState.current = video; }, [video]);
     useEffect(() => { currentAudioState.current = audio; }, [audio]);
     const router = useNavigate();
-
+    const connections = useRef({});;
     useEffect(()=>{
         getPermissions();
 
