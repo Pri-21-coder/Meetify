@@ -10,7 +10,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AuthContext } from '../contexts/AuthContext';
 import { Snackbar } from '@mui/material';
-
+import "../App.css"
 
 
 // TODO remove, this demo shouldn't need to reset the theme.
@@ -66,9 +66,10 @@ export default function Authentication() {
                 <CssBaseline />
                 <Grid
                     item
-                    xs={false}
-                    sm={4}
+                    xs={12}
+                    sm={12}
                     md={7}
+                    className="authHeroBanner"
                     sx={{
                         backgroundImage: 'url("/video.jpeg")',
                         backgroundRepeat: 'no-repeat',
@@ -78,26 +79,18 @@ export default function Authentication() {
                         backgroundPosition: 'center',
                     }}
                 />
-                <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-                    <Box
-                        sx={{
-                            my: 8,
-                            mx: 4,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                <Grid item xs={12} sm={12} md={5} component={Paper} elevation={6} square>
+                    <Box className="authFormContainer">
+                        <Avatar sx={{ m: 1,  bgcolor: '#1976d2', width: 48, height: 48, mb: 2}}>
                             <LockOutlinedIcon />
                         </Avatar>
 
 
-                        <div>
-                            <Button variant={formState === 0 ? "contained" : ""} onClick={() => { setFormState(0) }}>
+                        <div className="authToggleGroup">
+                            <Button fullWidth variant={formState === 0 ? "contained" : ""} onClick={() => { setFormState(0) }}>
                                 Sign In
                             </Button>
-                            <Button variant={formState === 1 ? "contained" : ""} onClick={() => { setFormState(1) }}>
+                            <Button fullWidth variant={formState === 1 ? "contained" : ""} onClick={() => { setFormState(1) }}>
                                 Sign Up
                             </Button>
                         </div>
@@ -146,6 +139,7 @@ export default function Authentication() {
                                 type="button"
                                 fullWidth
                                 variant="contained"
+                                className="authSubmitBtn"
                                 sx={{ mt: 3, mb: 2 }}
                                 onClick={handleAuth}
                             >
