@@ -211,7 +211,9 @@ export default function VideoMeetComponent(){
             //if (localVideoRef.current) { localVideoRef.current.srcObject = window.localStream; }
             // Add placeholder stream to peers
             for(let id in connections){
-                connections[id].addStream(window.localStream)
+                if (window.localStream) {
+                    connections[id].addStream(window.localStream);
+                }
                 connections[id].createOffer().then((description)=>{
                     connections[id].setLocalDescription(description)
                     .then(()=>{
@@ -811,7 +813,6 @@ export default function VideoMeetComponent(){
                             className={`${styles.meetUserVideo} ${screen ? '' : styles.mirror}`}
                             ref={localVideoRef}
                             autoPlay
-                            muted
                             playsInline
                             style={{ visibility: (video || screen) ? 'visible' : 'hidden' }}
                             onLoadedMetadata={(e) => e.target.play()}
