@@ -279,7 +279,14 @@ export default function VideoMeetComponent(){
             if (id === socketIdRef.current) continue;
             let sender = connections[id].getSenders().find(s => s.track.kind === 'video');
             if (sender) {
-                sender.replaceTrack(screenTrack).catch(e => console.log(e));
+                sender.replaceTrack(screenTrack)
+                .then(() => {
+                    connections[id].createOffer()
+                    .then((description) => connections[id].setLocalDescription(description))
+                    .then(() => {
+                        socketRef.current.emit("signal", id, JSON.stringify({"sdp": connections[id].localDescription}));
+                    });
+                }).catch(e => console.log(e));
             }
         }
         // Listen for browser "Stop Sharing" button
@@ -308,7 +315,14 @@ export default function VideoMeetComponent(){
                     if (id === socketIdRef.current) continue;
                     let sender = connections[id].getSenders().find(s => s.track.kind === 'video');
                     if (sender) {
-                        sender.replaceTrack(newCamTrack).catch(e => console.log(e));
+                        sender.replaceTrack(newCamTrack)
+                        .then(() => {
+                            connections[id].createOffer()
+                            .then((description) => connections[id].setLocalDescription(description))
+                            .then(() => {
+                                socketRef.current.emit("signal", id, JSON.stringify({"sdp": connections[id].localDescription}));
+                            });
+                        }).catch(e => console.log(e));
                     }
                 }    
             }).catch(e => console.log("Failed to restore camera", e));
@@ -770,20 +784,33 @@ export default function VideoMeetComponent(){
                                                 {getInitial(displayName)}
                                             </div>
                                         </div>
-           
-                                    {showVideo && (
                                         <video
                                         autoPlay
                                         playsInline
                                         className={`${styles.videoStream} ${isScreenShare ? '' : styles.mirror}`}
-                                        key={videoInfo.stream?.id}
+                                        key={videoInfo.socketId}
+                                        style={{ 
+                                            opacity: showVideo ? 1 : 0, 
+                                            position: showVideo ? 'relative' : 'absolute',
+                                            zIndex: showVideo ? 1 : -1,
+                                            pointerEvents: showVideo ? 'auto' : 'none'
+                                        }}
                                         ref={(ref) => {
-                                            if (ref && videoInfo.stream && ref.srcObject !== videoInfo.stream) {
-                                                ref.srcObject = videoInfo.stream;
-                                            }
+                                            if (ref && videoInfo.stream) {
+                                                // Only update the source if it has actually changed
+                                                if (ref.srcObject !== videoInfo.stream) {
+                                                    ref.srcObject = videoInfo.stream;
+                                                }
+            
+                                                // EXPLICITLY force the audio to route to the speakers at full volume
+                                                ref.muted = false; 
+                                                ref.volume = 1.0;
+            
+                                                // Catch and log if the browser's autoplay policy tries to block the audio
+                                                ref.play().catch(e => console.warn("Browser blocked audio output:", e));
+                                                }
                                         }}
                                         />
-                                    )}
                                     <div className={styles.muteIconOverlay}>
                                         <div style={{ backgroundColor: isAudioOn ? '#4caf50' : '#d93025', padding: '4px', borderRadius: '50%' }}>
                                             {isAudioOn ? <MicIcon fontSize="small" /> : <MicOffIcon fontSize="small" />}
