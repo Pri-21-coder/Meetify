@@ -19,8 +19,28 @@ const server_url = server;
 var connections = {};
 const peerConfigConnections = {
     "iceServers": [
-        {"urls": "stun:stun.l.google.com:19302"}
-    ]
+        {"urls": "stun:stun.l.google.com:19302"},
+        {
+            urls: "turn:global.relay.metered.ca:80",
+            username: process.env.REACT_APP_TURN_USERNAME,
+            credential: process.env.REACT_APP_TURN_CREDENTIAL,
+        },
+        {
+            urls: "turn:global.relay.metered.ca:80?transport=tcp",
+            username: process.env.REACT_APP_TURN_USERNAME,
+            credential: "process.env.REACT_APP_TURN_CREDENTIAL",
+        },
+        {
+            urls: "turn:global.relay.metered.ca:443",
+            username: process.env.REACT_APP_TURN_USERNAME,
+            credential: process.env.REACT_APP_TURN_CREDENTIAL,
+        },
+        {
+            urls: "turns:global.relay.metered.ca:443?transport=tcp",
+            username: process.env.REACT_APP_TURN_USERNAME,
+            credential: process.env.REACT_APP_TURN_CREDENTIAL,
+        },
+  ],
 }
 const getAvatarColor = (name) => {
     const darkColors = ['#5c2b29', '#2e4934', '#334863', '#4d3b5b', '#624128', '#2b5a5b', '#4a4a4a'];
